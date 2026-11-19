@@ -1,0 +1,130 @@
+Atlas Heating & Cooling | CRM: hubspot (mock) | SMS: mock Twilio | business time zone America/New_York
+
+=== 1. Web form lead (Tue, Nov 17, 10:00 AM) ==============================================
+  POST /webhooks/form -> created lead_c86fd0c3
+  SMS -> +12125550142: Hi Jane, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +12125550142 replies: "2"
+  SMS -> +12125550142: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+  +12125550142 replies: "today if possible"
+  SMS -> +12125550142: What's the ZIP code of the property?
+  +12125550142 replies: "10001"
+  SMS -> +12125550142: Last one: do you own the property? (yes/no)
+  +12125550142 replies: "yes we own it"
+  SMS -> +12125550142: Great news, we can help! Pick a time for your repair visit here: http://localhost:8900/book/bGVhZF9jODZmZDBjMy4xNzk2MTM3MjAw.zxYaMaX_54lc2wlhIodDpy
+  score 90 (hot) | HubSpot deal stages: appointmentscheduled -> qualifiedtobuy
+  Lead opens /book/bGVhZF9jODZmZDBj..., picks Tue, Nov 17, 3:00 PM -> HTTP 200
+  SMS -> +12125550142: You're booked for Tue, Nov 17, 3:00 PM. We'll text you a reminder before the visit. Reply C to reschedule.
+  stage=booked | deal stages: appointmentscheduled -> qualifiedtobuy -> presentationscheduled
+  duplicate form post (same submissionId): duplicate (no second text)
+
+=== 2. Missed call -> text-back -> booked =================================================
+  forged Twilio webhook -> HTTP 403 (rejected)
+  missed call webhook -> HTTP 200
+  Twilio retries the same webhook -> HTTP 200 (deduped by CallSid)
+  SMS -> +17185550199: Hi Marcus, this is Atlas Heating & Cooling. Sorry we missed your call! I can get you booked by text in under a minute. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +17185550199 replies: "need a new furnace, ours is 20 years old"
+  SMS -> +17185550199: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+  +17185550199 replies: "1"
+  SMS -> +17185550199: What's the ZIP code of the property?
+  +17185550199 replies: "my zip is 11211"
+  SMS -> +17185550199: Last one: do you own the property? (yes/no)
+  +17185550199 replies: "y"
+  SMS -> +17185550199: Great news, we can help! Pick a time for your install visit here: http://localhost:8900/book/bGVhZF9mYTEyNTNhZS4xNzk2MTM3MjAw.KJMqzajbjcqfSsJqe2Ky4M
+  Lead opens /book/bGVhZF9mYTEyNTNh..., picks Tue, Nov 17, 1:00 PM -> HTTP 200
+  SMS -> +17185550199: You're booked for Tue, Nov 17, 1:00 PM. We'll text you a reminder before the visit. Reply C to reschedule.
+  stage=booked score=100 | deal amount $8500
+
+=== 3. Reply mid-sequence stops the follow-ups ============================================
+  SMS -> +16465550110: Hi Tom, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  [Tue, Nov 17, 12:00 PM] tick -> { sent: 2, cancelled: 0, deferred: 0, closed: 0, failed: 0 }
+  SMS -> +17185550199: Reminder: your Atlas Heating & Cooling visit is Tue, Nov 17, 1:00 PM. Reply C to reschedule.
+  SMS -> +16465550110: Just checking in! What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +16465550110 replies: "3"
+  SMS -> +16465550110: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+  3 pending nudges cancelled on reply; a fresh timer started for the next question
+  +16465550110 replies: "couple of weeks"
+  SMS -> +16465550110: What's the ZIP code of the property?
+  +16465550110 replies: "10003"
+  SMS -> +16465550110: Last one: do you own the property? (yes/no)
+  +16465550110 replies: "yes"
+  SMS -> +16465550110: Great news, we can help! Pick a time for your maintenance visit here: http://localhost:8900/book/bGVhZF84NzVhZTg1NC4xNzk2MTQ4MDAw.2TNm5XdnEb0jb56ijTXF2i
+  stage=qualified (warm, 65) -> booking follow-ups queued: 4
+
+=== 4. STOP is honoured everywhere ========================================================
+  SMS -> +19175550188: Hi Kim, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +19175550188 replies: "STOP"
+  +19175550188 replies: "actually 2"
+  stage=opted_out | pending jobs=0 | CRM sms_opt_out=true | no reply sent
+
+=== 5. Outside the service area / just researching / wants a human ========================
+  SMS -> +12015550144: Hi Ray, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +12015550144 replies: "1"
+  SMS -> +12015550144: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+  +12015550144 replies: "asap"
+  SMS -> +12015550144: What's the ZIP code of the property?
+  +12015550144 replies: "07030"
+  SMS -> +12015550144: Last one: do you own the property? (yes/no)
+  +12015550144 replies: "yes"
+  SMS -> +12015550144: Thanks for the details! Unfortunately 07030 is outside our service area, so we can't send a technician. Sorry about that.
+  SMS -> +13475550161: Hi Lia, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +13475550161 replies: "1"
+  SMS -> +13475550161: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+  +13475550161 replies: "just researching for next year"
+  SMS -> +13475550161: What's the ZIP code of the property?
+  +13475550161 replies: "11215"
+  SMS -> +13475550161: Last one: do you own the property? (yes/no)
+  +13475550161 replies: "yes"
+  SMS -> +13475550161: Thanks! No rush at all. When you're ready, book any time here: http://localhost:8900/book/bGVhZF8yNGI3MzdhMy4xNzk2MTQ4MDAw.5aBS02U6h4g6Syh6oNC0CK
+  SMS -> +13325550175: Hi Ben, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +13325550175 replies: "can someone just call me please"
+  SMS -> +13325550175: No problem, a team member will call you shortly (we answer 8am to 6pm).
+  Ray: disqualified | Lia: nurture (no booking pushes) | Ben: handoff -> HubSpot stage decisionmakerboughtin
+
+=== 6. HubSpot rate limit burst + rejected record =========================================
+  3x HTTP 429 -> retried with Retry-After (waits: 1000ms, 1000ms, 1000ms) -> contact hs_c_128
+  SMS -> +12125550193: Hi Omar, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  SMS -> +12125550166: Hi Zoe, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  HubSpot 400 INVALID_EMAIL -> lead still texted, sync parked in DLQ: [{"id":1,"stage":"new_lead"}]
+  replay #1 after the fix -> synced (hs_c_130)
+
+=== 7. Evening missed call, nobody replies: quiet hours + full sequence ===================
+  [Tue, Nov 17, 7:30 PM] missed call -> HTTP 200
+  SMS -> +19175550123: Hi, this is Atlas Heating & Cooling. Sorry we missed your call! I can get you booked by text in under a minute. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  [Tue, Nov 17, 9:30 PM  ] tick -> sent 0, deferred 4, cancelled 1, closed 0
+  [Wed, Nov 18, 8:00 AM  ] tick -> sent 4, deferred 0, cancelled 0, closed 0
+  SMS -> +16465550110: Here's your booking link again, it takes 30 seconds: http://localhost:8900/book/bGVhZF84NzVhZTg1NC4xNzk2MjE2NDAw.9qxX79wrjUlSz5Q-P-j0Ke
+  SMS -> +12125550193: Just checking in! What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  SMS -> +12125550166: Just checking in! What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  SMS -> +19175550123: Just checking in! What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  [Wed, Nov 18, 11:00 AM ] tick -> sent 0, deferred 0, cancelled 0, closed 0
+  [Wed, Nov 18, 7:30 PM  ] tick -> sent 4, deferred 0, cancelled 0, closed 0
+  SMS -> +16465550110: Spots for this week are filling up. Grab a time here: http://localhost:8900/book/bGVhZF84NzVhZTg1NC4xNzk2MjU3ODAw.KS3noRqugthNQc1hO9ZfHH
+  SMS -> +12125550193: Still need help with your heating or cooling? What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  SMS -> +12125550166: Still need help with your heating or cooling? What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  SMS -> +19175550123: Still need help with your heating or cooling? What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  [Thu, Nov 19, 8:00 AM  ] tick -> sent 0, deferred 0, cancelled 0, closed 0
+  [Fri, Nov 20, 10:00 AM ] tick -> sent 0, deferred 0, cancelled 0, closed 0
+  [Fri, Nov 20, 7:30 PM  ] tick -> sent 4, deferred 0, cancelled 0, closed 0
+  SMS -> +16465550110: Last reminder from Atlas Heating & Cooling: book your visit at http://localhost:8900/book/bGVhZF84NzVhZTg1NC4xNzk2NDMwNjAw.BYZkOZ0E4YizvtODIP6bUf or reply with a time that works.
+  SMS -> +19175550123: Hi, we never heard back, so this is our last message. If you still need Atlas Heating & Cooling, just reply any time.
+  EMAIL -> omar@example.com: Hi Omar, we never heard back, so this is our last message. If you still need Atlas Heating & Cooling, just reply any time.
+  EMAIL -> zoe@bad-domain: Hi Zoe, we never heard back, so this is our last message. If you still need Atlas Heating & Cooling, just reply any time.
+  [Sat, Nov 21, 8:00 AM  ] tick -> sent 0, deferred 0, cancelled 0, closed 0
+  [Sat, Nov 21, 7:45 PM  ] tick -> sent 0, deferred 0, cancelled 0, closed 4
+  [Sun, Nov 22, 8:00 AM  ] tick -> sent 0, deferred 0, cancelled 0, closed 0
+  Priya: stage=no_response | HubSpot stage closedlost
+  Tom (qualified, never booked): stage=qualified, No booking after 3 follow-ups. Call manually.
+
+=== 8. A brand-new lead right now (for the dashboard) =====================================
+  SMS -> +19295550102: Hi Dana, thanks for contacting Atlas Heating & Cooling! A couple of quick questions so we send the right technician. What can we help with? Reply 1 for a new install or replacement, 2 for a repair, 3 for a maintenance plan.
+  +19295550102 replies: "repair"
+  SMS -> +19295550102: How soon do you need us? 1) ASAP / this week 2) This month 3) Just researching
+
+=== 9. Same engine against GoHighLevel ====================================================
+  one 502 retried | contact ghl_c_101 tags=["ai-qualified","web_form"]
+  opportunity ghl_o_102: stage_new -> stage_qualified | $450 | status open
+
+=== Summary ===============================================================================
+  leads: 11 {"booked":2,"qualified":1,"opted_out":1,"disqualified":1,"nurture":1,"handoff":1,"no_response":3,"qualifying":1}
+  SMS sent: 47, emails: 2, HubSpot contacts: 11, deals: 11, notes: 19, open DLQ: 0
+  dashboard: http://localhost:8900/admin   (Dana: lead_a298e75c)

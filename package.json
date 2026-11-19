@@ -1,0 +1,31 @@
+{
+  "name": "crm-lead-qualification",
+  "version": "1.0.0",
+  "description": "Form + missed-call leads -> AI SMS/email qualification -> score -> HubSpot or GoHighLevel contact + deal -> booking link -> follow-up sequence that stops on reply.",
+  "author": "Taha Elkarroumy",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "tsx src/cli.ts serve",
+    "tick": "tsx src/cli.ts tick",
+    "demo": "tsx scripts/demo.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "screenshots": "python3 scripts/screenshot.py",
+    "dlq": "tsx src/cli.ts dlq",
+    "replay": "tsx src/cli.ts replay"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  }
+}
